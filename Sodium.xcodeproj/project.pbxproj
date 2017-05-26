@@ -51,6 +51,7 @@
 		A0918C781E92489100C1DC33 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0918C771E92489100C1DC33 /* Auth.swift */; };
 		CFD847281BA8120900B1260F /* PWHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097F20D91AF127480088C2FE /* PWHash.swift */; };
 		D85101041E22EF5B003DB2E8 /* ReadmeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85101031E22EF5B003DB2E8 /* ReadmeTests.swift */; };
+		E9AB11891ED8AE2000685851 /* AEAD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AB11881ED8AE2000685851 /* AEAD.swift */; };
 		E9C0FFAD1ED8831B00ADE9EC /* GenericHashBlake2b.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C0FFAC1ED8831B00ADE9EC /* GenericHashBlake2b.swift */; };
 		E9C0FFB11ED8954000ADE9EC /* ECDH.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C0FFB01ED8954000ADE9EC /* ECDH.swift */; };
 /* End PBXBuildFile section */
@@ -162,6 +163,7 @@
 		D208E6BD1ECC7A69006D2137 /* sodium_lib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sodium_lib.h; sourceTree = "<group>"; };
 		D85101031E22EF5B003DB2E8 /* ReadmeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadmeTests.swift; sourceTree = "<group>"; };
 		D85101051E22F77E003DB2E8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E9AB11881ED8AE2000685851 /* AEAD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AEAD.swift; sourceTree = "<group>"; };
 		E9C0FFAC1ED8831B00ADE9EC /* GenericHashBlake2b.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericHashBlake2b.swift; sourceTree = "<group>"; };
 		E9C0FFB01ED8954000ADE9EC /* ECDH.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ECDH.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -252,6 +254,7 @@
 				7D6373E11E7B5E0800F04E72 /* KeyExchange.swift */,
 				A0918C771E92489100C1DC33 /* Auth.swift */,
 				E9C0FFB01ED8954000ADE9EC /* ECDH.swift */,
+				E9AB11881ED8AE2000685851 /* AEAD.swift */,
 			);
 			path = Sodium;
 			sourceTree = "<group>";
@@ -622,6 +625,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9AB11891ED8AE2000685851 /* AEAD.swift in Sources */,
 				7D6373E21E7B5E0800F04E72 /* KeyExchange.swift in Sources */,
 				095D80551A4ECCD7000B83F9 /* Sodium.swift in Sources */,
 				097F20DA1AF127480088C2FE /* PWHash.swift in Sources */,

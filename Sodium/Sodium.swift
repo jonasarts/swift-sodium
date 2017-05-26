@@ -22,6 +22,7 @@ public class Sodium {
     public var keyExchange = KeyExchange()
     public var auth = Auth()
     public var ecdh = ECDH()
+    public var aead = AEAD()
 
     public init?() {
         struct Once {

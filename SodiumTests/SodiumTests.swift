@@ -342,5 +342,27 @@ class SodiumTests: XCTestCase {
         // Alice and Bob should now have the same secret
         XCTAssertEqual(bobSecret, aliceSecret)
     }
+    
+    func testAEAD() {
+        // Generate a key
+        let key = sodium.aead.key()!
+        
+        // Generate a nonce
+        let nonce = sodium.aead.nonce()
+        
+        let message = "My Test Message".toData()!
+        let additionalData = "Additional Data".toData()!
+        
+        let encrypted: Data = sodium.aead.seal(message: message, additionalData: additionalData, nonce: nonce, key: key)!
+        let decrypted = sodium.aead.open(authenticatedCipherText: encrypted, additionalData: additionalData, nonce: nonce, key: key)!
+        
+        XCTAssertEqual(decrypted, message)
+        
+        
+        let (encrypted2, nonce2): (Data, AEAD.Nonce) = sodium.aead.seal(message: message, additionalData: additionalData, key: key)!
+        let decrypted2 = sodium.aead.open(authenticatedCipherText: encrypted2, additionalData: additionalData, nonce: nonce2, key: key)!
+        
+        XCTAssertEqual(decrypted2, message)
+    }
 
 }
