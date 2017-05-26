@@ -13,6 +13,7 @@ public class Sodium {
     public var box = Box()
     public var secretBox = SecretBox()
     public var genericHash = GenericHash()
+    public var genericHashBlake2b = GenericHashBlake2b()
     public var pwHash = PWHash()
     public var randomBytes = RandomBytes()
     public var shortHash = ShortHash()
@@ -20,6 +21,7 @@ public class Sodium {
     public var utils = Utils()
     public var keyExchange = KeyExchange()
     public var auth = Auth()
+    public var ecdh = ECDH()
 
     public init?() {
         struct Once {

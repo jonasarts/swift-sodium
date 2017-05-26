@@ -132,6 +132,67 @@ class SodiumTests: XCTestCase {
         let h6 = sodium.utils.bin2hex(s3.final()!)!
         XCTAssertEqual(h6, h3)
     }
+    
+    func testGenericHashBlake2b() {
+        let message = "My Test Message".toData()!
+        let h1 = sodium.utils.bin2hex(sodium.genericHashBlake2b.hash(message: message)!)!
+        XCTAssertEqual(h1, "64a9026fca646c31df54426ad15a341e2444d8a1863d57eb27abecf239609f75")
+        
+        let key = sodium.utils.hex2bin("64 a9 02 6f ca 64 6c 31 df 54", ignore: " ")
+        let h2 = sodium.utils.bin2hex(sodium.genericHashBlake2b.hash(message: message, key: key)!)!
+        XCTAssertEqual(h2, "1773f324cba2e7b0017e32d7e44f7afd1036c5d4ef9a80ae0e52e95a629844cd")
+        
+        let h3 = sodium.utils.bin2hex(sodium.genericHashBlake2b.hash(message: message, key: key, outputLength: sodium.genericHash.BytesMax)!)!
+        XCTAssertEqual(h3, "cba85e39f2d03923b2f66aba99b204333edc34a8443ab1700f7920c7abcc6639963a953f35162a520b21072ab906457d21f1645e6e3985858ee95a84d0771f07")
+    
+        let s1 = sodium.genericHashBlake2b.initStream()!
+        XCTAssertTrue(s1.update(input: message))
+        let h4 = sodium.utils.bin2hex(s1.final()!)!
+        XCTAssertEqual(h4, h1)
+        
+        let s2 = sodium.genericHashBlake2b.initStream(key: key, outputLength: sodium.genericHash.Bytes)!
+        XCTAssertTrue(s2.update(input: message))
+        let h5 = sodium.utils.bin2hex(s2.final()!)!
+        XCTAssertEqual(h5, h2)
+        
+        let s3 = sodium.genericHashBlake2b.initStream(key: key, outputLength: sodium.genericHash.BytesMax)!
+        XCTAssertTrue(s3.update(input: message))
+        let h6 = sodium.utils.bin2hex(s3.final()!)!
+        XCTAssertEqual(h6, h3)
+        
+        // --
+        
+        let salt = "salt".toData()!
+        XCTAssertLessThanOrEqual(salt.count, sodium.genericHashBlake2b.SaltBytes)
+        let personal = "personal".toData()!
+        XCTAssertLessThanOrEqual(salt.count, sodium.genericHashBlake2b.PersonalBytes)
+        
+        // --
+        
+        let h7 = sodium.utils.bin2hex(sodium.genericHashBlake2b.hash(message: message, salt: salt, personal: personal)!)!
+        XCTAssertEqual(h7, "725e13edcc7998ffa876bb81a9cf5a755f9c0718f7011c0323e76afc0052fc5b")
+        
+        let h8 = sodium.utils.bin2hex(sodium.genericHashBlake2b.hash(message: message,  key: key, salt: salt, personal: personal)!)!
+        XCTAssertEqual(h8, "673c879395188cd3a921c366578e6b71bd1b4a7b44fa5d7a8df397b6310d4d14")
+        
+        let h9 = sodium.utils.bin2hex(sodium.genericHashBlake2b.hash(message: message, key: key, salt: salt, personal: personal, outputLength: sodium.genericHashBlake2b.BytesMax)!)!
+        XCTAssertEqual(h9, "4022640965e7d197d3409f798ccd220228738bfe0d780be436824aba91814c2563d90bc94c052fcdc3ebe2debdd295efdff1f3e18ca5db321f7c15f329306cc8")
+
+        let s4 = sodium.genericHashBlake2b.initStream(salt: salt, personal: personal)!
+        XCTAssertTrue(s4.update(input: message))
+        let h10 = sodium.utils.bin2hex(s4.final()!)!
+        XCTAssertEqual(h10, h7)
+        
+        let s5 = sodium.genericHashBlake2b.initStream(key: key, salt: salt, personal: personal, outputLength: sodium.genericHash.Bytes)!
+        XCTAssertTrue(s5.update(input: message))
+        let h11 = sodium.utils.bin2hex(s5.final()!)!
+        XCTAssertEqual(h11, h8)
+        
+        let s6 = sodium.genericHashBlake2b.initStream(key: key, salt: salt, personal: personal, outputLength: sodium.genericHash.BytesMax)!
+        XCTAssertTrue(s6.update(input: message))
+        let h12 = sodium.utils.bin2hex(s6.final()!)!
+        XCTAssertEqual(h12, h9)
+    }
 
     func testRandomBytes() {
         let randomLen = 100 + Int(sodium.randomBytes.uniform(upperBound: 100))
@@ -261,6 +322,25 @@ class SodiumTests: XCTestCase {
         
         XCTAssertEqual(sessionKeyPairForAlice.rx, sessionKeyPairForBob.tx)
         XCTAssertEqual(sessionKeyPairForAlice.tx, sessionKeyPairForBob.rx)
+    }
+    
+    func testECDH() {
+        // Generate Alice's and Bob's key pairs
+        let alice = sodium.ecdh.keyPair()!
+        let bob = sodium.ecdh.keyPair()!
+        
+        // Alice and bob exchange public keys
+        let alicePublicKey = alice.publicKey
+        let bobPublicKey = bob.publicKey
+        
+        // Alice calculates the Diffie-Helman secret
+        let aliceSecret = sodium.ecdh.secret(secretKey: alice.secretKey, publicKey: bobPublicKey)!
+        
+        // Bob calculates the Diffie-Helman secret
+        let bobSecret = sodium.ecdh.secret(secretKey: bob.secretKey, publicKey: alicePublicKey)!
+        
+        // Alice and Bob should now have the same secret
+        XCTAssertEqual(bobSecret, aliceSecret)
     }
 
 }
