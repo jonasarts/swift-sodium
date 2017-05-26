@@ -363,6 +363,12 @@ class SodiumTests: XCTestCase {
         let decrypted2 = sodium.aead.open(authenticatedCipherText: encrypted2, additionalData: additionalData, nonce: nonce2, key: key)!
         
         XCTAssertEqual(decrypted2, message)
+        
+        
+        let encrypted3: Data = sodium.aead.seal(message: message, nonce: nonce, key: key)!
+        let decrypted3 = sodium.aead.open(authenticatedCipherText: encrypted3, nonce: nonce, key: key)!
+        
+        XCTAssertEqual(decrypted3, message)
     }
 
 }

@@ -40,7 +40,7 @@ public class AEAD {
         return nonce
     }
     
-    public func seal(message: Data, additionalData: Data, key: Key) -> (authenticatedCipherText: Data, nonce: Nonce)? {
+    public func seal(message: Data, additionalData: Data? = nil, key: Key) -> (authenticatedCipherText: Data, nonce: Nonce)? {
         if !isAvail() {
             return nil
         }
@@ -59,7 +59,7 @@ public class AEAD {
         }
     }
     
-    public func seal(message: Data, additionalData: Data, nonce: Nonce, key: Key) -> Data? {
+    public func seal(message: Data, additionalData: Data? = nil, nonce: Nonce, key: Key) -> Data? {
         if !isAvail() {
             return nil
         }
@@ -89,9 +89,33 @@ public class AEAD {
         var authenticatedCipherText = Data(count: message.count + AES256GCMABytes)
         //var authenticatedCipherTextLength: CUnsignedLongLong = 0
 
-        let result = authenticatedCipherText.withUnsafeMutableBytes { authenticatedCipherTextPtr in
-            return message.withUnsafeBytes { messagePtr in
-                return additionalData.withUnsafeBytes { additionalDataPtr in
+        var result: Int32 = -1
+        
+        if let additionalData = additionalData {
+            result = authenticatedCipherText.withUnsafeMutableBytes { authenticatedCipherTextPtr in
+                return message.withUnsafeBytes { messagePtr in
+                    return additionalData.withUnsafeBytes { additionalDataPtr in
+                        return nonce.withUnsafeBytes { noncePtr in
+                            return key.withUnsafeBytes { keyPtr in
+                                return crypto_aead_aes256gcm_encrypt(
+                                    authenticatedCipherTextPtr,
+                                    nil, //&authenticatedCipherTextLength,
+                                    messagePtr,
+                                    CUnsignedLongLong(message.count),
+                                    additionalDataPtr,
+                                    CUnsignedLongLong(additionalData.count),
+                                    nil,
+                                    noncePtr,
+                                    keyPtr
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            result = authenticatedCipherText.withUnsafeMutableBytes { authenticatedCipherTextPtr in
+                return message.withUnsafeBytes { messagePtr in
                     return nonce.withUnsafeBytes { noncePtr in
                         return key.withUnsafeBytes { keyPtr in
                             return crypto_aead_aes256gcm_encrypt(
@@ -99,12 +123,12 @@ public class AEAD {
                                 nil, //&authenticatedCipherTextLength,
                                 messagePtr,
                                 CUnsignedLongLong(message.count),
-                                additionalDataPtr,
-                                CUnsignedLongLong(additionalData.count),
+                                nil,
+                                CUnsignedLongLong(0),
                                 nil,
                                 noncePtr,
                                 keyPtr
-                                )
+                            )
                         }
                     }
                 }
@@ -118,7 +142,7 @@ public class AEAD {
         return authenticatedCipherText
     }
  
-    public func open(authenticatedCipherText: Data, additionalData: Data, nonce: Nonce, key: Key) -> Data? {
+    public func open(authenticatedCipherText: Data, additionalData: Data? = nil, nonce: Nonce, key: Key) -> Data? {
         if !isAvail() {
             return nil
         }
@@ -152,9 +176,33 @@ public class AEAD {
         var message = Data(count: authenticatedCipherText.count - AES256GCMABytes)
         //var messageLength: CUnsignedLongLong = 0
         
-        let result = message.withUnsafeMutableBytes { messagePtr in
-            return authenticatedCipherText.withUnsafeBytes { authenticatedCipherTextPtr in
-                return additionalData.withUnsafeBytes { additionalDataPtr in
+        var result: Int32 = -1
+        
+        if let additionalData = additionalData {
+            result = message.withUnsafeMutableBytes { messagePtr in
+                return authenticatedCipherText.withUnsafeBytes { authenticatedCipherTextPtr in
+                    return additionalData.withUnsafeBytes { additionalDataPtr in
+                        return nonce.withUnsafeBytes { noncePtr in
+                            return key.withUnsafeBytes { keyPtr in
+                                return crypto_aead_aes256gcm_decrypt(
+                                    messagePtr,
+                                    nil, //&messageLength,
+                                    nil,
+                                    authenticatedCipherTextPtr,
+                                    CUnsignedLongLong(authenticatedCipherText.count),
+                                    additionalDataPtr,
+                                    CUnsignedLongLong(additionalData.count),
+                                    noncePtr,
+                                    keyPtr
+                                    )
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            result = message.withUnsafeMutableBytes { messagePtr in
+                return authenticatedCipherText.withUnsafeBytes { authenticatedCipherTextPtr in
                     return nonce.withUnsafeBytes { noncePtr in
                         return key.withUnsafeBytes { keyPtr in
                             return crypto_aead_aes256gcm_decrypt(
@@ -163,11 +211,11 @@ public class AEAD {
                                 nil,
                                 authenticatedCipherTextPtr,
                                 CUnsignedLongLong(authenticatedCipherText.count),
-                                additionalDataPtr,
-                                CUnsignedLongLong(additionalData.count),
+                                nil,
+                                CUnsignedLongLong(0),
                                 noncePtr,
                                 keyPtr
-                                )
+                            )
                         }
                     }
                 }
