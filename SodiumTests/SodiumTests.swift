@@ -370,5 +370,18 @@ class SodiumTests: XCTestCase {
         
         XCTAssertEqual(decrypted3, message)
     }
+    
+    func testUtilsIncrement() {
+        // Generate a nonce
+        let nonce1 = sodium.aead.nonce()
+        var nonce2 = nonce1
+        
+        XCTAssertEqual(sodium.utils.equals(nonce1, nonce2), true)
+        
+        sodium.utils.increment(data: &nonce2)
+        
+        XCTAssertNotEqual(nonce1, nonce2)
+        XCTAssertEqual(sodium.utils.equals(nonce1, nonce2), false)
+    }
 
 }

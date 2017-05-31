@@ -16,7 +16,7 @@ public class Utils {
 
      - Parameter data: The `Data` object to zero.
      */
-    public func zero(_ data: inout Data)  {
+    public func zero(_ data: inout Data) {
       let count = data.count
       data.withUnsafeMutableBytes { (dataPtr: UnsafeMutablePointer<UInt8>) in
         let rawPtr = UnsafeMutableRawPointer(dataPtr)
@@ -118,5 +118,17 @@ public class Utils {
 
         binData.count = Int(binDataLen)
         return binData
+    }
+    
+    /**
+ 
+     */
+    public func increment(data: inout Data) {
+        let count = data.count
+        
+        data.withUnsafeMutableBytes { (dataPtr: UnsafeMutablePointer<UInt8>) in
+            sodium_increment(dataPtr, count)
+            return
+        }
     }
 }
