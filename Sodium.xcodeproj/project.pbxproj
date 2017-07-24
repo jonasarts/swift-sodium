@@ -10,6 +10,8 @@
 		038365151A5A51D20081136D /* SecretBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038365141A5A51D20081136D /* SecretBox.swift */; };
 		091C7CDA1A507E95002E5351 /* ShortHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091C7CD91A507E95002E5351 /* ShortHash.swift */; };
 		091C7CDC1A50839D002E5351 /* Sign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091C7CDB1A50839D002E5351 /* Sign.swift */; };
+		094298301EDDAA3B001236B1 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0942982F1EDDAA3B001236B1 /* Stream.swift */; };
+		094298311EDDAA3B001236B1 /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0942982F1EDDAA3B001236B1 /* Stream.swift */; };
 		094F21EA1A5017CA001C3141 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094F21E91A5017CA001C3141 /* Box.swift */; };
 		095D80551A4ECCD7000B83F9 /* Sodium.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095D80541A4ECCD7000B83F9 /* Sodium.swift */; };
 		095D80571A4ED0B4000B83F9 /* GenericHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095D80561A4ED0B4000B83F9 /* GenericHash.swift */; };
@@ -73,6 +75,7 @@
 		0917824F1CA164970022765D /* crypto_pwhash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypto_pwhash.h; sourceTree = "<group>"; };
 		091C7CD91A507E95002E5351 /* ShortHash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShortHash.swift; sourceTree = "<group>"; };
 		091C7CDB1A50839D002E5351 /* Sign.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sign.swift; sourceTree = "<group>"; };
+		0942982F1EDDAA3B001236B1 /* Stream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
 		094E493F1BE6C7760053AC01 /* crypto_aead_aes256gcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypto_aead_aes256gcm.h; sourceTree = "<group>"; };
 		094F21E91A5017CA001C3141 /* Box.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		095D80541A4ECCD7000B83F9 /* Sodium.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sodium.swift; sourceTree = "<group>"; };
@@ -243,6 +246,7 @@
 				09A943CC1A4EB5F500C8A04F /* Sodium.h */,
 				094F21E91A5017CA001C3141 /* Box.swift */,
 				038365141A5A51D20081136D /* SecretBox.swift */,
+				0942982F1EDDAA3B001236B1 /* Stream.swift */,
 				095D80561A4ED0B4000B83F9 /* GenericHash.swift */,
 				E9C0FFAC1ED8831B00ADE9EC /* GenericHashBlake2b.swift */,
 				097F20D91AF127480088C2FE /* PWHash.swift */,
@@ -634,6 +638,7 @@
 				091C7CDC1A50839D002E5351 /* Sign.swift in Sources */,
 				E9C0FFB11ED8954000ADE9EC /* ECDH.swift in Sources */,
 				A0918C781E92489100C1DC33 /* Auth.swift in Sources */,
+				094298301EDDAA3B001236B1 /* Stream.swift in Sources */,
 				091C7CDA1A507E95002E5351 /* ShortHash.swift in Sources */,
 				095D805B1A4F35CA000B83F9 /* RandomBytes.swift in Sources */,
 				095D80571A4ED0B4000B83F9 /* GenericHash.swift in Sources */,
@@ -682,6 +687,7 @@
 				90C75EE71AE3583E00F1E749 /* GenericHash.swift in Sources */,
 				90C75EE91AE3583E00F1E749 /* RandomBytes.swift in Sources */,
 				60C211E71EB73D3900882AD0 /* Auth.swift in Sources */,
+				094298311EDDAA3B001236B1 /* Stream.swift in Sources */,
 				90C75EEA1AE3583E00F1E749 /* ShortHash.swift in Sources */,
 				90C75EEB1AE3583E00F1E749 /* Sign.swift in Sources */,
 				90C75EEC1AE3583E00F1E749 /* Sodium.swift in Sources */,
