@@ -62,7 +62,7 @@ class ReadmeTests : XCTestCase {
         let message = "My Test Message".data(using:.utf8)!
         let keyPair = sodium.sign.keyPair()!
         let signedMessage = sodium.sign.sign(message: message, secretKey: keyPair.secretKey)!
-        if let unsignedMessage = sodium.sign.open(signedMessage: signedMessage, publicKey: keyPair.publicKey) {
+        if sodium.sign.open(signedMessage: signedMessage, publicKey: keyPair.publicKey) != nil {
             // signature is valid
         }
     }
@@ -72,7 +72,7 @@ class ReadmeTests : XCTestCase {
         let message = "My Test Message".data(using:.utf8)!
         let secretKey = sodium.secretBox.key()!
         let encrypted: Data = sodium.secretBox.seal(message: message, secretKey: secretKey)!
-        if let decrypted = sodium.secretBox.open(nonceAndAuthenticatedCipherText: encrypted, secretKey: secretKey) {
+        if sodium.secretBox.open(nonceAndAuthenticatedCipherText: encrypted, secretKey: secretKey) != nil {
             // authenticator is valid, decrypted contains the original message
         }
     }
@@ -172,10 +172,33 @@ class ReadmeTests : XCTestCase {
     func testStream() {
         let sodium = Sodium()!
         let input = "test".data(using:.utf8)!
-        let key = sodium.stream.key()!;
+        let key = sodium.stream.key()!
         let (output, nonce) = sodium.stream.xor(input: input, secretKey: key)!
         let twice = sodium.stream.xor(input: output, nonce: nonce, secretKey: key)!
 
         XCTAssertEqual(input, twice)
+    }
+
+    func testAuth() {
+        let sodium = Sodium()!
+        let input = "test".data(using:.utf8)!
+        let key = sodium.auth.key()!
+        let tag = sodium.auth.tag(message: input, secretKey: key)!
+        let tagIsValid = sodium.auth.verify(message: input, secretKey: key, tag: tag)
+
+        XCTAssertTrue(tagIsValid)
+    }
+
+    func testKeyDerivation() {
+        let sodium = Sodium()!
+        let secretKey = sodium.keyDerivation.key()!
+
+        let subKey1 = sodium.keyDerivation.derive(secretKey: secretKey,
+            index: 0, length: 32,
+            context: "Context!")!
+        let subKey2 = sodium.keyDerivation.derive(secretKey: secretKey,
+            index: 1, length: 32,
+            context: "Context!")!
+        XCTAssertNotEqual(subKey1, subKey2)
     }
 }

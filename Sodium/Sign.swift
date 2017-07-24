@@ -192,7 +192,7 @@ public class Sign {
     }
 
     /**
-     Extracts and returns the message data of a signed message if the signature is verified  with the sender's secret key.
+     Extracts and returns the message data of a signed message if the signature is verified with the sender's secret key.
 
      - Parameter signedMessage: The signed message to open.
      - Parameter publicKey: The sender's public key.
@@ -205,7 +205,7 @@ public class Sign {
         }
 
         var message = Data(count: signedMessage.count - Bytes)
-        var mlen: CUnsignedLongLong = 0;
+        var mlen: CUnsignedLongLong = 0
         let result = message.withUnsafeMutableBytes { messagePtr in
             return signedMessage.withUnsafeBytes { signedMessagePtr in
                 return publicKey.withUnsafeBytes { publicKeyPtr in
