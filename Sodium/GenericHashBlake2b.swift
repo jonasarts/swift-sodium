@@ -1,13 +1,7 @@
-//
-//  GenericHashBlake2b.swift
-//  Sodium
-//
 //  Created by Jonas Hauser on 26.05.17.
-//  Copyright © 2017 Jonas Hauser. All rights reserved.
-//
 
 import Foundation
-import libsodium
+import Clibsodium
 
 public class GenericHashBlake2b {
     

@@ -1,13 +1,7 @@
-//
-//  AEAD.swift
-//  Sodium
-//
 //  Created by Jonas Hauser on 26.05.17.
-//  Copyright © 2017 Jonas Hauser. All rights reserved.
-//
 
 import Foundation
-import libsodium
+import Clibsodium
 
 public class AEAD {
     public let AES256GCMKeyBytes = Int(crypto_aead_aes256gcm_keybytes())
@@ -19,9 +13,7 @@ public class AEAD {
     public typealias Nonce = Data
     
     func isAvail() -> Bool {
-        return true
-        
-        //return crypto_aead_aes256gcm_is_available() != 0
+        return crypto_aead_aes256gcm_is_available() != 0
     }
 
     public func key() -> Key? {

@@ -1,13 +1,5 @@
-//
-//  Sodium.swift
-//  Sodium
-//
-//  Created by Frank Denis on 12/27/14.
-//  Copyright (c) 2014 Frank Denis. All rights reserved.
-//
-
 import Foundation
-import libsodium
+import Clibsodium
 
 public class Sodium {
     public let box = Box()
@@ -23,16 +15,17 @@ public class Sodium {
     public let auth = Auth()
     public let stream = Stream()
     public let keyDerivation = KeyDerivation()
+    public let secretStream = SecretStream()
     public let ecdh = ECDH()
     public let aead = AEAD()
 
-    public init?() {
-        struct Once {
-            static var once : () = {
-                if sodium_init() == -1 {
-                    abort()
-                }
-            }()
+    private static let once: Void = {
+        if sodium_init() < 0 {
+            fatalError("Failed to initialize libsodium")
         }
+    }()
+
+    public init() {
+        _ = Sodium.once
     }
 }

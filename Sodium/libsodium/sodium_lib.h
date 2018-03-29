@@ -35,6 +35,7 @@
 #include "crypto_scalarmult_curve25519.h"
 #include "crypto_secretbox.h"
 #include "crypto_secretbox_xsalsa20poly1305.h"
+#include "crypto_secretstream_xchacha20poly1305.h"
 #include "crypto_shorthash.h"
 #include "crypto_shorthash_siphash24.h"
 #include "crypto_sign.h"
@@ -57,9 +58,10 @@
 
 #ifndef SODIUM_LIBRARY_MINIMAL
 # include "crypto_box_curve25519xchacha20poly1305.h"
+# include "crypto_core_ed25519.h"
+# include "crypto_scalarmult_ed25519.h"
 # include "crypto_secretbox_xchacha20poly1305.h"
 # include "crypto_pwhash_scryptsalsa208sha256.h"
-# include "crypto_stream_aes128ctr.h"
 # include "crypto_stream_salsa2012.h"
 # include "crypto_stream_salsa208.h"
 # include "crypto_stream_xchacha20.h"

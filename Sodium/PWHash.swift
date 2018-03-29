@@ -1,13 +1,5 @@
-//
-//  PWHash.swift
-//  Sodium
-//
-//  Created by Frank Denis on 4/29/15.
-//  Copyright (c) 2015 Frank Denis. All rights reserved.
-//
-
 import Foundation
-import libsodium
+import Clibsodium
 
 public class PWHash {
     public let SaltBytes = Int(crypto_pwhash_saltbytes())
@@ -19,6 +11,12 @@ public class PWHash {
     public let MemLimitInteractive = Int(crypto_pwhash_memlimit_interactive())
     public let MemLimitModerate = Int(crypto_pwhash_memlimit_moderate())
     public let MemLimitSensitive = Int(crypto_pwhash_memlimit_sensitive())
+
+    public enum Alg {
+        case Default
+        case Argon2I13
+        case Argon2ID13
+    }
 
     /**
      Generates an ASCII encoded string, which includes:
@@ -38,19 +36,15 @@ public class PWHash {
     public func str(passwd: Data, opsLimit: Int, memLimit: Int) -> String? {
         var output = Data(count: StrBytes)
         let result = output.withUnsafeMutableBytes { outputPtr in
-            return passwd.withUnsafeBytes { passwdPtr in
-                return crypto_pwhash_str(outputPtr,
-                                         passwdPtr,
-                                         CUnsignedLongLong(passwd.count),
-                                         CUnsignedLongLong(opsLimit),
-                                         size_t(memLimit))
+            passwd.withUnsafeBytes { passwdPtr in
+                crypto_pwhash_str(outputPtr,
+                                  passwdPtr, CUnsignedLongLong(passwd.count),
+                                  CUnsignedLongLong(opsLimit), size_t(memLimit))
             }
         }
-
         if result != 0 {
             return nil
         }
-
         return String(data: output, encoding: .utf8)
     }
 
@@ -64,16 +58,32 @@ public class PWHash {
      */
     public func strVerify(hash: String, passwd: Data) -> Bool {
         guard let hashData = (hash + "\0").data(using: .utf8, allowLossyConversion: false) else {
-                return false
+            return false
         }
-
         return hashData.withUnsafeBytes { hashPtr in
-            return passwd.withUnsafeBytes { passwdPtr in
-                return crypto_pwhash_str_verify(
-                  hashPtr,
-                  passwdPtr,
-                  CUnsignedLongLong(passwd.count)) == 0
+            passwd.withUnsafeBytes { passwdPtr in
+                crypto_pwhash_str_verify(
+                    hashPtr, passwdPtr, CUnsignedLongLong(passwd.count)) == 0
             }
+        }
+    }
+
+    /**
+     Checks that a string previously hashed password matches the current algorithm and parameters
+
+     - Parameter hash: The password hash string to check.
+     - Parameter opsLimit: Represents a maximum amount of computations to perform. Raising this number will make the function require more CPU cycles to compute a key.
+     - Parameter memLimit: The maximum amount of RAM that the function will use, in bytes.
+
+     - Returns: `true` if the password hash should be updated.
+     */
+    public func strNeedsRehash(hash: String, opsLimit: Int, memLimit: Int) -> Bool {
+        guard let hashData = (hash + "\0").data(using: .utf8, allowLossyConversion: false) else {
+            return true
+        }
+        return hashData.withUnsafeBytes { hashPtr in
+            crypto_pwhash_str_needs_rehash(
+                hashPtr, CUnsignedLongLong(opsLimit), size_t(memLimit)) != 0
         }
     }
 
@@ -87,36 +97,38 @@ public class PWHash {
      - Parameter salt: Unpredicatable salt data.  Must have a fixed length of `SaltBytes`.
      - Parameter opsLimit: Represents a maximum amount of computations to perform. Raising this number will make the function require more CPU cycles to compute a key.
      - Parameter memLimit: The maximum amount of RAM that the function will use, in bytes.
+     - Parameter alg: The algorithm identifier (`.Default`, `.Argon2I13`, `.Argon2ID13`).
 
      - Returns: The derived key data.
      */
-    public func hash(outputLength: Int, passwd: Data, salt: Data, opsLimit: Int, memLimit: Int) -> Data? {
+    public func hash(outputLength: Int, passwd: Data, salt: Data, opsLimit: Int, memLimit: Int, alg: Alg = .Default) -> Data? {
         if salt.count != SaltBytes {
             return nil
         }
-
         var output = Data(count: outputLength)
-
+        var algId: Int32
+        switch alg {
+        case .Default:
+            algId = crypto_pwhash_alg_default()
+        case .Argon2I13:
+            algId = crypto_pwhash_alg_argon2i13()
+        case .Argon2ID13:
+            algId = crypto_pwhash_alg_argon2id13()
+        }
         let result = passwd.withUnsafeBytes { passwdPtr in
-            return salt.withUnsafeBytes { saltPtr in
-                return output.withUnsafeMutableBytes { outputPtr in
-                    return crypto_pwhash(
-                      outputPtr,
-                      CUnsignedLongLong(outputLength),
-                      passwdPtr,
-                      CUnsignedLongLong(passwd.count),
-                      saltPtr,
-                      CUnsignedLongLong(opsLimit),
-                      size_t(memLimit),
-                      crypto_pwhash_ALG_DEFAULT)
+            salt.withUnsafeBytes { saltPtr in
+                output.withUnsafeMutableBytes { outputPtr in
+                    crypto_pwhash(
+                        outputPtr, CUnsignedLongLong(outputLength),
+                        passwdPtr, CUnsignedLongLong(passwd.count),
+                        saltPtr, CUnsignedLongLong(opsLimit),
+                        size_t(memLimit), algId)
                 }
             }
         }
-
         if result != 0 {
             return nil
         }
-
         return output
     }
 }
