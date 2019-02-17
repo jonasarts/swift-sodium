@@ -5,6 +5,8 @@ public struct Sodium {
     public let box = Box()
     public let secretBox = SecretBox()
     public let genericHash = GenericHash()
+    public let genericHashBlake2b = GenericHashBlake2b()
+    public let genericHashBlake2bSaltPersonal = GenericHashBlake2bSaltPersonal()
     public let pwHash = PWHash()
     public let randomBytes = RandomBytes()
     public let shortHash = ShortHash()
@@ -16,6 +18,7 @@ public struct Sodium {
     public let keyDerivation = KeyDerivation()
     public let secretStream = SecretStream()
     public let aead = Aead()
+    public let ecdh = ECDH()
 
     public init() {
         _ = Sodium.once

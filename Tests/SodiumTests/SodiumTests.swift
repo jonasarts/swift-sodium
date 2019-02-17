@@ -148,6 +148,64 @@ class SodiumTests: XCTestCase {
         let h6 = sodium.utils.bin2hex(s3.final()!)!
         XCTAssertEqual(h6, h3)
     }
+    
+    func testGenericHashBlake2b() {
+        let message = "My Test Message".bytes
+        let h1 = sodium.utils.bin2hex(sodium.genericHashBlake2b.hash(message: message)!)!
+        XCTAssertEqual(h1, "64a9026fca646c31df54426ad15a341e2444d8a1863d57eb27abecf239609f75")
+        
+        let key = sodium.utils.hex2bin("64 a9 02 6f ca 64 6c 31 df 54", ignore: " ")
+        let h2 = sodium.utils.bin2hex(sodium.genericHashBlake2b.hash(message: message, key: key)!)!
+        XCTAssertEqual(h2, "1773f324cba2e7b0017e32d7e44f7afd1036c5d4ef9a80ae0e52e95a629844cd")
+        
+        let h3 = sodium.utils.bin2hex(sodium.genericHashBlake2b.hash(message: message, key: key, outputLength: sodium.genericHashBlake2b.BytesMax)!)!
+        XCTAssertEqual(h3, "cba85e39f2d03923b2f66aba99b204333edc34a8443ab1700f7920c7abcc6639963a953f35162a520b21072ab906457d21f1645e6e3985858ee95a84d0771f07")
+        
+        let s1 = sodium.genericHashBlake2b.initStream()!
+        XCTAssertTrue(s1.update(input: message))
+        let h4 = sodium.utils.bin2hex(s1.final()!)!
+        XCTAssertEqual(h4, h1)
+        
+        let s2 = sodium.genericHashBlake2b.initStream(key: key, outputLength: sodium.genericHashBlake2b.Bytes)!
+        XCTAssertTrue(s2.update(input: message))
+        let h5 = sodium.utils.bin2hex(s2.final()!)!
+        XCTAssertEqual(h5, h2)
+        
+        let s3 = sodium.genericHashBlake2b.initStream(key: key, outputLength: sodium.genericHashBlake2b.BytesMax)!
+        XCTAssertTrue(s3.update(input: message))
+        let h6 = sodium.utils.bin2hex(s3.final()!)!
+        XCTAssertEqual(h6, h3)
+    }
+    
+    func testGenericHashBlake2bSaltPersonal() {
+        let message = "My Test Message".bytes
+        let salt = sodium.utils.hex2bin("00 a9 02 6f ca 64 6c 00", ignore: " ")!
+        let personal = "context0".bytes
+        let h1 = sodium.utils.bin2hex(sodium.genericHashBlake2bSaltPersonal.hash(message: message, salt: salt, personal: personal)!)!
+        XCTAssertEqual(h1, "d0bcced8f87a1701720e9ca59aa82a79320763d709486c1717c04e7860773df8")
+        
+        let key = sodium.utils.hex2bin("64 a9 02 6f ca 64 6c 31 df 54", ignore: " ")
+        let h2 = sodium.utils.bin2hex(sodium.genericHashBlake2bSaltPersonal.hash(message: message, key: key, salt: salt, personal: personal)!)!
+        XCTAssertEqual(h2, "0975a52de09e7cb5346f11902ba8c8a676fc9e82358f0d14f880f8cbb291a660")
+        
+        let h3 = sodium.utils.bin2hex(sodium.genericHashBlake2bSaltPersonal.hash(message: message, key: key, salt: salt, personal: personal, outputLength: sodium.genericHashBlake2bSaltPersonal.BytesMax)!)!
+        XCTAssertEqual(h3, "d9eb3432f29c5c37f918c1e15065453461a9a85f0bac841ce937d9154304f4dad1089bea84e8a9ec88dfd2e877c62ff221e5e4ce3f0d97bcec925ea92fcfe299")
+        
+        let s1 = sodium.genericHashBlake2bSaltPersonal.initStream(salt: salt, personal: personal)!
+        XCTAssertTrue(s1.update(input: message))
+        let h4 = sodium.utils.bin2hex(s1.final()!)!
+        XCTAssertEqual(h4, h1)
+        
+        let s2 = sodium.genericHashBlake2bSaltPersonal.initStream(key: key, salt: salt, personal: personal, outputLength: sodium.genericHashBlake2bSaltPersonal.Bytes)!
+        XCTAssertTrue(s2.update(input: message))
+        let h5 = sodium.utils.bin2hex(s2.final()!)!
+        XCTAssertEqual(h5, h2)
+        
+        let s3 = sodium.genericHashBlake2bSaltPersonal.initStream(key: key, salt: salt, personal: personal, outputLength: sodium.genericHashBlake2bSaltPersonal.BytesMax)!
+        XCTAssertTrue(s3.update(input: message))
+        let h6 = sodium.utils.bin2hex(s3.final()!)!
+        XCTAssertEqual(h6, h3)
+    }
 
     func testRandomBytes() {
         let randomLen = 100 + Int(sodium.randomBytes.uniform(upperBound: 100))
@@ -427,5 +485,17 @@ class SodiumTests: XCTestCase {
         let decryptedEmpty: Bytes = sodium.aead.xchacha20poly1305ietf.decrypt(nonceAndAuthenticatedCipherText: encryptedEmpty, secretKey: secretKey, additionalData: additionalData)!
         
         XCTAssertTrue(decryptedEmpty == emptyMessage)
+    }
+    
+    func testECDH() {
+        let secretKey = sodium.utils.hex2bin("fea6a7251c1e72916d11c2cb214d3c252539121d8e234e652d651fa4c8cff881")!
+        let bobPublicKey = sodium.utils.hex2bin("dea6a7251c1e72916d11c2cb214d3c252539121d8e234e652d651fa4c8cff870")!
+        
+        let publicKey = sodium.ecdh.publicKey(secretKey)
+        
+        let sharedSecret = sodium.ecdh.secret(secretKey, bobPublicKey);
+        
+        XCTAssertEqual(sodium.utils.bin2hex(publicKey!), "679c4de97d04696f3c8f44e624a30679acd0bb779fa8c547353214445da0182a")
+        XCTAssertEqual(sodium.utils.bin2hex(sharedSecret!), "f453a1e39d0089ca8228d8f16d59793e18aedf30cf9644e84e788941836ff724")
     }
 }
