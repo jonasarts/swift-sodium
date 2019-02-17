@@ -179,17 +179,17 @@ class SodiumTests: XCTestCase {
     
     func testGenericHashBlake2bSaltPersonal() {
         let message = "My Test Message".bytes
-        let salt = sodium.utils.hex2bin("00 a9 02 6f ca 64 6c 00", ignore: " ")!
-        let personal = "context0".bytes
+        let salt = "5b6b41ed9b343fe0".bytes
+        let personal = "5126fb2a37400d2a".bytes
         let h1 = sodium.utils.bin2hex(sodium.genericHashBlake2bSaltPersonal.hash(message: message, salt: salt, personal: personal)!)!
-        XCTAssertEqual(h1, "d0bcced8f87a1701720e9ca59aa82a79320763d709486c1717c04e7860773df8")
+        XCTAssertEqual(h1, "5b015c9fd9bfafe145d195eaeed1901a4a5757b57639743e555e1eb25b91e665")
         
         let key = sodium.utils.hex2bin("64 a9 02 6f ca 64 6c 31 df 54", ignore: " ")
         let h2 = sodium.utils.bin2hex(sodium.genericHashBlake2bSaltPersonal.hash(message: message, key: key, salt: salt, personal: personal)!)!
-        XCTAssertEqual(h2, "0975a52de09e7cb5346f11902ba8c8a676fc9e82358f0d14f880f8cbb291a660")
+        XCTAssertEqual(h2, "21708e1227fa1717971d32f8bc7b27c689a43dafaf6262fd0d7fbca2acbcda85")
         
         let h3 = sodium.utils.bin2hex(sodium.genericHashBlake2bSaltPersonal.hash(message: message, key: key, salt: salt, personal: personal, outputLength: sodium.genericHashBlake2bSaltPersonal.BytesMax)!)!
-        XCTAssertEqual(h3, "d9eb3432f29c5c37f918c1e15065453461a9a85f0bac841ce937d9154304f4dad1089bea84e8a9ec88dfd2e877c62ff221e5e4ce3f0d97bcec925ea92fcfe299")
+        XCTAssertEqual(h3, "8ad0bcbe0f13ed451dabb3c6a936c59c1400d97d7a036f1d632f564874d0fb9752756d21948e3525e628d89163df8ec9c6ac40cc0c6ae8da16e4cb97a95db7a8")
         
         let s1 = sodium.genericHashBlake2bSaltPersonal.initStream(salt: salt, personal: personal)!
         XCTAssertTrue(s1.update(input: message))
