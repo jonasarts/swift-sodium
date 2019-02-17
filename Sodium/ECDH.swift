@@ -17,6 +17,14 @@ public struct ECDH {
 
 extension ECDH {
     
+    public func secretKey() -> Key? {
+        var secretKey = Bytes(count: DHScalarBytes)
+        
+        randombytes_buf(&secretKey, DHScalarBytes)
+        
+        return secretKey
+    }
+    
     public func publicKey(_ secretKey: Key) -> Key? {
         guard secretKey.count == DHScalarBytes else { return nil }
         
@@ -31,6 +39,13 @@ extension ECDH {
         }
         
         return publicKey
+    }
+    
+    public func dhKeyPair() -> KeyPair {
+        let secretKey = self.secretKey()
+        let publicKey = self.publicKey(secretKey!)
+        
+        return KeyPair(publicKey: publicKey!, secretKey: secretKey!)
     }
     
     public func secret(_ secretKey: Key, _ publicKey: Key) -> Key? {

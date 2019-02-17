@@ -488,6 +488,10 @@ class SodiumTests: XCTestCase {
     }
     
     func testECDH() {
+        let dhkey = sodium.ecdh.dhKeyPair()
+        
+        XCTAssertNotNil(dhkey)
+        
         let secretKey = sodium.utils.hex2bin("fea6a7251c1e72916d11c2cb214d3c252539121d8e234e652d651fa4c8cff881")!
         let bobPublicKey = sodium.utils.hex2bin("dea6a7251c1e72916d11c2cb214d3c252539121d8e234e652d651fa4c8cff870")!
         
