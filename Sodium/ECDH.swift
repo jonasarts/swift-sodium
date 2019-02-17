@@ -1,4 +1,11 @@
+//
+//  ECDH.swift
+//  Sodium
+//
 //  Created by Jonas Hauser on 26.05.17.
+//  Updated by Jonas Hauser on 17.02.19.
+//  Copyright © 2019 Frank Denis. All rights reserved.
+//
 
 import Foundation
 import Clibsodium
